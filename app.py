@@ -1,3 +1,6 @@
+# mongoDB connection string
+# mongodb+srv: // user1: < password > @cluster0.b3z3fnc.mongodb.net /?retryWrites = true & w = majority
+
 import streamlit as st
 import json
 import plotly.graph_objects as go
@@ -20,6 +23,8 @@ st.subheader("Browse to choose your JSON file")
 with st.container():
     uploaded_file = st.sidebar.file_uploader(
         "Upload File", type=['xml', 'json'])
+    helper.fetch_log()
+
 
 if uploaded_file:
     st.write("FileName: ", uploaded_file.name)
@@ -44,6 +49,9 @@ if uploaded_file:
         else:
             labels = ['Pass', 'Fail']
             helper.plot_donut(labels, values)
+            insert_op = helper.insert_log(uploaded_file.name, uploaded_file.type,
+                                          values[0], values[1])
+
 
 # ------- Removed Made with streamlit -------
 hide_streamlit_style = """
