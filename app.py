@@ -18,23 +18,21 @@ values = []
 # -------header_section------
 
 st.title("Welcome to the dashboard")
-st.subheader("Browse to choose your JSON file")
-
+st.sidebar.subheader("Browse to choose your file")
+# ,type=['xml', 'json']
 with st.container():
-    uploaded_file = st.sidebar.file_uploader(
-        "Upload File", type=['xml', 'json'])
-    helper.fetch_log()
-
-
+    uploaded_file = st.sidebar.file_uploader("Upload file")
+    
 if uploaded_file:
     st.write("FileName: ", uploaded_file.name)
     st.write("FileType: ", uploaded_file.type)
     st.write("FileSize: ", uploaded_file.size)
+    
     try:
         data = json.load(uploaded_file)
 
     except Exception as e:
-        st.write('Error : Uploaded JSON file is not Formated Appropriately')
+        st.write('Error : Uploaded file is not Formated Appropriately')
         print(e)
 
     else:
@@ -51,6 +49,8 @@ if uploaded_file:
             helper.plot_donut(labels, values)
             insert_op = helper.insert_log(uploaded_file.name, uploaded_file.type,
                                           values[0], values[1])
+
+helper.fetch_log()
 
 
 # ------- Removed Made with streamlit -------

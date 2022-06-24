@@ -1,3 +1,4 @@
+from debugpy import connect
 import streamlit as st
 import plotly.graph_objects as go
 import datetime
@@ -31,13 +32,22 @@ def plot_donut(labels, values):
     st.plotly_chart(fig)
 
 
+def connnect():
+    uri = "mongodb+srv://user1:user1.mongo@cluster0.b3z3fnc.mongodb.net/?retryWrites=true&w=majority"
+    client = MongoClient(uri)
+    db = client.Dashboard
+    coll = db.files_log
+    return coll
+    
+
 def insert_log(file_name, file_type, success, failure):
     try:
         uri = "mongodb+srv://user1:user1.mongo@cluster0.b3z3fnc.mongodb.net/?retryWrites=true&w=majority"
         client = MongoClient(uri)
+        
         db = client.Dashboard
-
         coll = db.files_log
+
         ct = datetime.datetime.now()
 
         insert = [{
@@ -63,9 +73,13 @@ def fetch_log():
     client = MongoClient(uri)
     db = client.Dashboard
     coll = db.files_log
-    cursor = coll.find()
+    cursor = coll.find().sort('timestamp',-1).limit(5)
     for doc in cursor:
         st.write(doc['timestamp'], ' - ', doc['file_name'])
         st.write("success", ' - ', doc['success'])
         st.write("failure", ' - ', doc['failure'])
     client.close()
+
+
+def compare_result(file_name, file_type):
+    pass
