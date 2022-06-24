@@ -5,59 +5,88 @@ import streamlit as st
 import json
 import plotly.graph_objects as go
 import helper
-# import plotly as plt
-# import plotly.express as px
+import xml.etree.ElementTree as ET
 
 st.set_page_config(page_title="Dashboard", page_icon=":tada:", layout="wide")
 
-data = {}
-
-# ---- values = pass and fail value after iterating through file ----
-values = []
-
-# -------header_section------
-
+#---------------------------- header_section ----------------------------
 st.title("Welcome to the dashboard")
-st.subheader("Browse to choose your JSON file")
+st.sidebar.subheader("Browse to choose your file")
 
-with st.container():
-    uploaded_file = st.sidebar.file_uploader(
-        "Upload File", type=['xml', 'json'])
+# ---------------------------- Removed Made with streamlit ----------------------------
+helper.remove_streamlit_tag()
+
+uploaded_file = st.sidebar.file_uploader("Upload File")        
+
+if(uploaded_file):
+    st.write("FileName: ",uploaded_file.name)
+    st.write("FileType: ", uploaded_file.type)
+    st.write("FileSize: ", uploaded_file.size, ' bytes')
+#---------------------------- For XML file ----------------------------
+    if(uploaded_file.type == "text/xml"):
+        try:
+            tree = ET.parse(uploaded_file)    
+            root = tree.getroot()        
+        except Exception as e:             
+            st.markdown(
+                f'<h1 style="color:#e2062c;font-size:100%;">{"Error : Uploaded file is not Formated Appropriately"}</h1>',
+                unsafe_allow_html=True)
+            print(e)                   
+        else:                        
+            try:        
+                with st.expander("Display Test Stages"):              
+                    values = helper.xml_result(root)
+                if(values[2]):
+                    st.write('total cases: ',values[2])
+                    st.write('Passed cases: ',values[0])
+                    st.write('Failed cases: ',values[1])                                    
+            except Exception as e: 
+                st.markdown(
+                    f'<h1 style="color:#e2062c;font-size:100%;">{"Error : Uploaded XML file is not Formated Appropriately"}</h1>',
+                    unsafe_allow_html=True)
+                print(e)               
+            else:
+                labels = ['Pass','Fail']      
+                helper.plot_donut(labels, values)
+                insert_op = helper.insert_log(uploaded_file.name, uploaded_file.type,
+                                        values[0], values[1])
+
+#---------------------------- For JSON file ----------------------------
+    elif(uploaded_file.type ==  "application/json"):        
+        try:
+            data = json.load(uploaded_file)
+        except Exception as e:
+            st.markdown(
+                f'<h1 style="color:#e2062c;font-size:100%;">{"Error : Uploaded file is not Formated Appropriately"}</h1>',
+                unsafe_allow_html=True)
+            print(e)
+        else:
+            try:
+                with st.expander("See test stages"):
+                    values = helper.json_result(data) 
+                st.write('total cases: ',values[2]) 
+                st.write('Passed cases: ',values[0])
+                st.write('Failed cases: ',values[1])                
+
+            except Exception as e:
+                st.markdown(
+                    f'<h1 style="color:#e2062c;font-size:100%;">{"Error : Uploaded file is not Formated Appropriately"}</h1>',
+                    unsafe_allow_html=True)
+                print(e)
+
+            else:
+                labels = ['Pass', 'Fail']
+                helper.plot_donut(labels, values)
+                insert_op = helper.insert_log(uploaded_file.name, uploaded_file.type,
+                                        values[0], values[1])
+#---------------------------- For file is neither JSON nor XML ----------------------------    
+    else:        
+        st.markdown(
+            f'<h1 style="color:#e2062c;font-size:100%;">{"Error : Uploaded file is not a valid file"}</h1>',
+            unsafe_allow_html=True)
+
+#---------------------------- For History ----------------------------  
+with st.expander("See History"):              
     helper.fetch_log()
 
 
-if uploaded_file:
-    st.write("FileName: ", uploaded_file.name)
-    st.write("FileType: ", uploaded_file.type)
-    st.write("FileSize: ", uploaded_file.size)
-    try:
-        data = json.load(uploaded_file)
-
-    except Exception as e:
-        st.write('Error : Uploaded JSON file is not Formated Appropriately')
-        print(e)
-
-    else:
-        try:
-            with st.expander("See test stages"):
-                values = helper.testcases_result(data)
-
-        except Exception as e:
-            st.write('Error : Uploaded JSON file is not Formated Appropriately')
-            print(e)
-
-        else:
-            labels = ['Pass', 'Fail']
-            helper.plot_donut(labels, values)
-            insert_op = helper.insert_log(uploaded_file.name, uploaded_file.type,
-                                          values[0], values[1])
-
-
-# ------- Removed Made with streamlit -------
-hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
