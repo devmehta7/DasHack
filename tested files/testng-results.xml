@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="40" total="41" passed="1" failed="0" skipped="0">
+  <reporter-output>
+    <line>
+      <![CDATA[Feature-UAT" Create category,TestCase Name: 5.109]]>
+    </line>
+    <line>
+      <![CDATA[<br></br> Step 1 :: Enter the URL in browser address bar and hit enter.]]>
+    </line>
+    <line>
+      <![CDATA[<br></br> Step :: Click on admin signin Link link.]]>
+    </line>
+    <line>
+      <![CDATA[<br></br> Step :: Enter admin User Name ::]]>
+    </line>
+    <line>
+      <![CDATA[<br></br> Step :: Enter admin Password ::]]>
+    </line>
+    <line>
+      <![CDATA[<br></br> Step :: Click on signin button ::]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on Auction Overview Page]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on Create New Auction Button]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Select Auction Type]]>
+    </line>
+    <line>
+      <![CDATA[<br></br> AuctionType :: Live]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on clerking style.]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Select Timezone]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Select Date]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Enter Sale no.]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Enter Sale Name.]]>
+    </line>
+    <line>
+      <![CDATA[<br></br> Step:: Enter Description]]>
+    </line>
+    <line>
+      <![CDATA[<br></br> Step:: Enter Term and condition]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Add Consignor Commission & Fee]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on Save Changes Button.]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: New Sale Number.]]>
+    </line>
+    <line>
+      <![CDATA[<br></br> Application displays message as Success Auction saved (a: 3110)]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Auction URL >> https://qa3-6-auto.auctionserver.net/admin/manage-auctions/edit/id/3110]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step ::   Go to the lots tab]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on the 'Add lot' button]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Enter a lot number]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Enter a lot name]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Enter consignor name]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on save and exit]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Go to the register bidders tab.]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Enter bidder name.]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on search button]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Select bidder]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on register checked user button.]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on Yes]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on Approve]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on Enter Bids tab]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Enter Lot#]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Enter Starting bid]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Click on Sell Button]]>
+    </line>
+    <line>
+      <![CDATA[<br></br>Step :: Verified Bidder# validation message is displayed if user tries to submit/sell the lot without entering any data.]]>
+    </line>
+    <line>
+      <![CDATA[PASS : Verify_Enter_bids_Bidder_validation_is_missing_when_user_tries_to_submit_or_sell_the_lot_without_entering_any_data_9832
+]]>
+    </line>
+  </reporter-output>
+  <suite started-at="2022-06-15T05:56:20Z" name="SAM-9380" finished-at="2022-06-15T05:59:44Z" duration-ms="203598">
+    <groups>
+    </groups>
+    <test started-at="2022-06-15T05:56:20Z" name="Selenium Verify_Enter_bids_Bidder_validation_is_missing_when_user_tries_to_submit_or_sell_the_lot_without_entering_any_data_9832" finished-at="2022-06-15T05:59:44Z" duration-ms="203598">
+      <class name="com.auction.verifications.SAM_9380">
+        <test-method is-config="true" signature="fetchSuiteConfiguration(org.testng.ITestContext)[pri:0, instance:com.auction.verifications.SAM_9380@69997e9d]" started-at="2022-06-15T05:56:20Z" name="fetchSuiteConfiguration" finished-at="2022-06-15T05:56:20Z" duration-ms="19" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[org.testng.TestRunner@2bb91dc4]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- fetchSuiteConfiguration -->
+        <test-method is-config="true" signature="setUp(java.lang.reflect.Method)[pri:0, instance:com.auction.verifications.SAM_9380@69997e9d]" started-at="2022-06-15T05:56:20Z" name="setUp" finished-at="2022-06-15T05:56:25Z" duration-ms="5055" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void com.auction.verifications.SAM_9380.Verify_Enter_bids_Bidder_validation_is_missing_when_user_tries_to_submit_or_sell_the_lot_without_entering_any_data_9832(java.lang.String,java.lang.String,java.lang.String) throws java.lang.InterruptedException,java.text.ParseException,java.awt.AWTException]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method signature="Verify_Enter_bids_Bidder_validation_is_missing_when_user_tries_to_submit_or_sell_the_lot_without_entering_any_data_9832(java.lang.String, java.lang.String, java.lang.String)[pri:0, instance:com.auction.verifications.SAM_9380@69997e9d]" started-at="2022-06-15T05:56:25Z" name="Verify_Enter_bids_Bidder_validation_is_missing_when_user_tries_to_submit_or_sell_the_lot_without_entering_any_data_9832" data-provider="missedliveauction" finished-at="2022-06-15T05:59:42Z" duration-ms="196629" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[admin]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[123123]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[perfectQAServices800]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+            <line>
+              <![CDATA[Feature-UAT" Create category,TestCase Name: 5.109]]>
+            </line>
+            <line>
+              <![CDATA[<br></br> Step 1 :: Enter the URL in browser address bar and hit enter.]]>
+            </line>
+            <line>
+              <![CDATA[<br></br> Step :: Click on admin signin Link link.]]>
+            </line>
+            <line>
+              <![CDATA[<br></br> Step :: Enter admin User Name ::]]>
+            </line>
+            <line>
+              <![CDATA[<br></br> Step :: Enter admin Password ::]]>
+            </line>
+            <line>
+              <![CDATA[<br></br> Step :: Click on signin button ::]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on Auction Overview Page]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on Create New Auction Button]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Select Auction Type]]>
+            </line>
+            <line>
+              <![CDATA[<br></br> AuctionType :: Live]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on clerking style.]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Select Timezone]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Select Date]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Enter Sale no.]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Enter Sale Name.]]>
+            </line>
+            <line>
+              <![CDATA[<br></br> Step:: Enter Description]]>
+            </line>
+            <line>
+              <![CDATA[<br></br> Step:: Enter Term and condition]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Add Consignor Commission & Fee]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on Save Changes Button.]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: New Sale Number.]]>
+            </line>
+            <line>
+              <![CDATA[<br></br> Application displays message as Success Auction saved (a: 3110)]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Auction URL >> https://qa3-6-auto.auctionserver.net/admin/manage-auctions/edit/id/3110]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step ::   Go to the lots tab]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on the 'Add lot' button]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Enter a lot number]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Enter a lot name]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Enter consignor name]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on save and exit]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Go to the register bidders tab.]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Enter bidder name.]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on search button]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Select bidder]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on register checked user button.]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on Yes]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on Approve]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on Enter Bids tab]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Enter Lot#]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Enter Starting bid]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Click on Sell Button]]>
+            </line>
+            <line>
+              <![CDATA[<br></br>Step :: Verified Bidder# validation message is displayed if user tries to submit/sell the lot without entering any data.]]>
+            </line>
+          </reporter-output>
+        </test-method> <!-- Verify_Enter_bids_Bidder_validation_is_missing_when_user_tries_to_submit_or_sell_the_lot_without_entering_any_data_9832 -->
+        <test-method is-config="true" signature="tearDown(org.testng.ITestResult)[pri:0, instance:com.auction.verifications.SAM_9380@69997e9d]" started-at="2022-06-15T05:59:42Z" name="tearDown" finished-at="2022-06-15T05:59:44Z" duration-ms="1866" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=Verify_Enter_bids_Bidder_validation_is_missing_when_user_tries_to_submit_or_sell_the_lot_without_entering_any_data_9832 status=SUCCESS method=SAM_9380.Verify_Enter_bids_Bidder_validation_is_missing_when_user_tries_to_submit_or_sell_the_lot_without_entering_any_data_9832(java.lang.String, java.lang.String, java.lang.String)[pri:0, instance:com.auction.verifications.SAM_9380@69997e9d] output=Feature-UAT" Create category,TestCase Name: 5.109]]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+            <line>
+              <![CDATA[PASS : Verify_Enter_bids_Bidder_validation_is_missing_when_user_tries_to_submit_or_sell_the_lot_without_entering_any_data_9832
+]]>
+            </line>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- com.auction.verifications.SAM_9380 -->
+    </test> <!-- Selenium Verify_Enter_bids_Bidder_validation_is_missing_when_user_tries_to_submit_or_sell_the_lot_without_entering_any_data_9832 -->
+  </suite> <!-- SAM-9380 -->
+</testng-results>

@@ -1,4 +1,3 @@
-from unittest import result
 import streamlit as st
 import plotly.graph_objects as go
 import datetime
@@ -93,10 +92,14 @@ def fetch_log():
     db = client.Dashboard
     coll = db.files_log    
     cursor = coll.find().sort('timestamp',-1).limit(5)
+    success = 0
+    failure = 0
     for doc in cursor:
         st.write(doc['timestamp'], ' - ', doc['file_name'])
-        result =  f"success - {doc['success']}" + " "*10 + f"failure - {doc['failure']}"        
-        st.write(result)        
+        success = doc['success']
+        faliure = doc['failure']
+        st.markdown(f'<span style="color:#3cd070;font-size:80%;">{" SUCCEEDED - "}{success}</span>\
+            <span style="color:#e2062c;font-size:80%;margin-left: 10em;">{" FAILED - "}{faliure}</span>',unsafe_allow_html=True)
     client.close()
 
 def remove_streamlit_tag():
