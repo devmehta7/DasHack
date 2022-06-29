@@ -101,6 +101,8 @@ def fetch_log():
     success = 0
     faliure = 0 
     cursor = coll.find().sort('timestamp',-1).limit(5)
+    success = 0
+    failure = 0
     for doc in cursor:
         st.write(doc['timestamp'], ' - ', doc['file_name'])
         success = doc['success']
@@ -181,8 +183,6 @@ def show_result(file_name, file_type, success, failure):
                     unsafe_allow_html=True)
 
     conn[0].close()
-
-
 
 def remove_streamlit_tag():
     hide_streamlit_style = """
