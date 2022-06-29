@@ -100,10 +100,14 @@ def fetch_log():
     coll = conn[1]
 
     cursor = coll.find().sort('timestamp',-1).limit(5)
+    success = 0
+    failure = 0
     for doc in cursor:
         st.write(doc['timestamp'], ' - ', doc['file_name'])
-        result =  f"success - {doc['success']}" + " "*10 + f"failure - {doc['failure']}"        
-        st.write(result)        
+        success = doc['success']
+        faliure = doc['failure']
+        st.markdown(f'<span style="color:#3cd070;font-size:80%;">{" SUCCEEDED - "}{success}</span>\
+            <span style="color:#e2062c;font-size:80%;margin-left: 10em;">{" FAILED - "}{faliure}</span>',unsafe_allow_html=True)        
     conn[0].close()
 
 def show_result(file_name, file_type, success, failure):
@@ -178,8 +182,6 @@ def show_result(file_name, file_type, success, failure):
                     unsafe_allow_html=True)
 
     conn[0].close()
-
-
 
 def remove_streamlit_tag():
     hide_streamlit_style = """
