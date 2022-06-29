@@ -113,20 +113,69 @@ def show_result(file_name, file_type, success, failure):
     for doc in cursor:
         success_diff = success - doc['success'] 
         failure_diff = failure - doc['failure']
+        total_diff = (success+failure) - (doc['success']+doc['failure'])
+        col1, col2, col3 = st.columns(3)
+            
+        with col1:
+            st.header('Passed')               
+            if success_diff == 0:
+                st.title(success)
+                # st.subheader(success_diff)  
+                st.markdown(
+                    f'<h1 style="color:#00FF00;font-size:35px;">{success_diff}</h1>',
+                    unsafe_allow_html=True)        
+                # st.write('Passed: ',success, ' in Normal, ', success_diff)   
+            elif success_diff > 0:
+                st.title(success)
+                st.markdown(
+                    f'<h1 style="color:#00FF00;font-size:35px;">{success_diff}</h1>',
+                    unsafe_allow_html=True)  
+                # st.subheader(success_diff)
+                
+                # st.write('Passed: ',success, ' in Green, +', success_diff)
+            else: 
+                st.title(success)
+                # st.subheader(success_diff)
+                st.markdown(
+                    f'<h1 style="color:#FF0000;font-size:35px;">{success_diff}</h1>',
+                    unsafe_allow_html=True)  
+                # st.write('Passed: ',success, ' in Red, ', success_diff)
+
+        with col2:
+            st.header('Failed')    
+            if failure_diff == 0:
+                st.title(failure)
+                # st.subheader(failure_diff)
+                st.markdown(
+                    f'<h1 style="color:#00FF00;font-size:35px;">{failure_diff}</h1>',
+                    unsafe_allow_html=True)  
+                # st.write('Failed: ',failure, ' in Normal, ', failure_diff) 
+            elif failure_diff > 0 :
+                st.title(failure)
+                # st.subheader(failure_diff)
+                st.markdown(
+                    f'<h1 style="color:#00FF00;font-size:35px;">{failure_diff}</h1>',
+                    unsafe_allow_html=True)  
+                # st.write('Failed: ',failure, ' in Green, +', failure_diff)
+            else:
+                st.title(failure)
+                # st.subheader(failure_diff)
+                st.markdown(
+                    f'<h1 style="color:#FF0000;font-size:35px;">{failure_diff}</h1>',
+                    unsafe_allow_html=True)  
+                # st.write('Failed: ',failure, ' in Red, ', failure_diff)
         
-        if success_diff == 0:
-            st.write('Passed: ',success, ' in Normal, ', success_diff)   
-        elif success_diff > 0:
-            st.write('Passed: ',success, ' in Green, +', success_diff)
-        else: 
-            st.write('Passed: ',success, ' in Red, ', success_diff)
-         
-        if failure_diff == 0:
-            st.write('Failed: ',failure, ' in Normal, ', failure_diff) 
-        elif failure_diff >= 0 :
-            st.write('Failed: ',failure, ' in Green, +', failure_diff)
-        else:
-            st.write('Failed: ',failure, ' in Red, ', failure_diff)
+        with col3:
+            st.header('Total Cases')
+            st.title(success+failure)
+            if total_diff >= 0:
+                st.markdown(
+                    f'<h1 style="color:#00FF00;font-size:35px;">{total_diff}</h1>',
+                    unsafe_allow_html=True)
+            else:
+                st.markdown(
+                    f'<h1 style="color:#FF0000;font-size:35px;">{total_diff}</h1>',
+                    unsafe_allow_html=True)
 
     conn[0].close()
 
