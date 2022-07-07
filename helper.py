@@ -2,34 +2,41 @@ import streamlit as st
 import plotly.graph_objects as go
 import datetime
 from pymongo import MongoClient
+import glob
+
 
 def xml_result(root):
     success = 0
     failure = 0
-    tag_count = 0    
+    tag_count = 0
     try:
         for node in root[1][1][0].findall("test-method"):
-            tag_count += 1        
+            tag_count += 1
         for i in range(tag_count):
-            st.write("* ", root[1][1][0][i].attrib['signature'])                                
-            if(root[1][1][0][i].attrib['status']=='PASS'):
+            st.write("* ", root[1][1][0][i].attrib['signature'])
+            if(root[1][1][0][i].attrib['status'] == 'PASS'):
                 success += 1
-                st.markdown(f'<h1 style="color:#3cd070;font-size:100%;">{"> SUCCEEDED "}</h1>', unsafe_allow_html=True)       
+                st.markdown(
+                    f'<h1 style="color:#3cd070;font-size:100%;">{"> SUCCEEDED "}</h1>', unsafe_allow_html=True)
             else:
                 failure += 1
-                st.markdown(f'<h1 style="color:#e2062c;font-size:100%;">{"> FALIED "}</h1>', unsafe_allow_html=True)    
-    except:                                    
+                st.markdown(
+                    f'<h1 style="color:#e2062c;font-size:100%;">{"> FAILED "}</h1>', unsafe_allow_html=True)
+    except:
         for node in root.findall("testcase"):
-            tag_count += 1       
-        for i in range(1,tag_count+1):                                        
-            st.write("* ", root[i].attrib['name'])                              
-            if(root[i][0].tag=='failure'):
+            tag_count += 1
+        for i in range(1, tag_count+1):
+            st.write("* ", root[i].attrib['name'])
+            if(root[i][0].tag == 'failure'):
                 failure += 1
-                st.markdown(f'<h1 style="color:#e2062c;font-size:100%;">{"> FALIED "}</h1>', unsafe_allow_html=True)          
+                st.markdown(
+                    f'<h1 style="color:#e2062c;font-size:100%;">{"> FAILED "}</h1>', unsafe_allow_html=True)
             else:
                 success += 1
-                st.markdown(f'<h1 style="color:#3cd070;font-size:100%;">{"> SUCCEEDED "}</h1>', unsafe_allow_html=True)   
+                st.markdown(
+                    f'<h1 style="color:#3cd070;font-size:100%;">{"> SUCCEEDED "}</h1>', unsafe_allow_html=True)
     return [success, failure, tag_count]
+
 
 def json_result(data):
     success = 0
@@ -45,9 +52,20 @@ def json_result(data):
             success += 1
         else:
             st.markdown(
-                f'<h1 style="color:#e2062c;font-size:100%;">{"> FALIED "}</h1>', unsafe_allow_html=True)
-            failure += 1            
+                f'<h1 style="color:#e2062c;font-size:100%;">{"> FAILED "}</h1>', unsafe_allow_html=True)
+            failure += 1
     return [success, failure, key_count]
+
+
+def show_ss():
+    with st.expander("Failed Cases Screenshot"):
+        for path in glob.glob('../../Documents/PerfectQA/selenium/selenium/target/failsafe-reports/*.png'):
+            # im = Image.open(path)
+            caption = path.replace(
+                '../../Documents/PerfectQA/selenium/selenium/target/failsafe-reports/', ' ')
+
+            st.image(image=path, caption=caption)
+
 
 def plot_donut(labels, values):
 
@@ -67,11 +85,10 @@ def connect():
     # returns [0] - client object, [1] - collection to work with.
     return [client, coll]
 
-    
 
 def insert_log(file_name, file_type, success, failure):
     try:
-       
+
         conn = connect()
         coll = conn[1]
         ct = datetime.datetime.now()
@@ -95,81 +112,83 @@ def insert_log(file_name, file_type, success, failure):
 
 
 def fetch_log():
-   
+
     conn = connect()
     coll = conn[1]
     success = 0
-    faliure = 0 
-    cursor = coll.find().sort('timestamp',-1).limit(5)
+
+    cursor = coll.find().sort('timestamp', -1).limit(5)
     success = 0
     failure = 0
     for doc in cursor:
         st.write(doc['timestamp'], ' - ', doc['file_name'])
         success = doc['success']
-        faliure = doc['failure']
+        failure = doc['failure']
         st.markdown(f'<span style="color:#3cd070;font-size:80%;">{" SUCCEEDED - "}{success}</span>\
-            <span style="color:#e2062c;font-size:80%;margin-left: 10em;">{" FAILED - "}{faliure}</span>',unsafe_allow_html=True)
+            <span style="color:#e2062c;font-size:80%;margin-left: 10em;">{" FAILED - "}{failure}</span>', unsafe_allow_html=True)
     conn[0].close()
+
 
 def show_result(file_name, file_type, success, failure):
     conn = connect()
     coll = conn[1]
-    cursor = coll.find({"file_name": file_name, "file_type":file_type}).sort("timestamp", -1).limit(1)
+    cursor = coll.find({"file_name": file_name, "file_type": file_type}).sort(
+        "timestamp", -1).limit(1)
     for doc in cursor:
-        success_diff = success - doc['success'] 
+        success_diff = success - doc['success']
         failure_diff = failure - doc['failure']
         total_diff = (success+failure) - (doc['success']+doc['failure'])
         col1, col2, col3 = st.columns(3)
-            
+
         with col1:
-            st.header('Passed')               
+            st.header('Passed')
             if success_diff == 0:
                 st.title(success)
-                # st.subheader(success_diff)  
+                # st.subheader(success_diff)
                 st.markdown(
                     f'<h1 style="color:#00FF00;font-size:35px;">{success_diff}</h1>',
-                    unsafe_allow_html=True)        
-                # st.write('Passed: ',success, ' in Normal, ', success_diff)   
+                    unsafe_allow_html=True)
+                # st.write('Passed: ',success, ' in Normal, ', success_diff)
             elif success_diff > 0:
                 st.title(success)
                 st.markdown(
                     f'<h1 style="color:#00FF00;font-size:35px;">{success_diff}</h1>',
-                    unsafe_allow_html=True)  
+                    unsafe_allow_html=True)
                 # st.subheader(success_diff)
-                
+
                 # st.write('Passed: ',success, ' in Green, +', success_diff)
-            else: 
+            else:
                 st.title(success)
                 # st.subheader(success_diff)
                 st.markdown(
                     f'<h1 style="color:#FF0000;font-size:35px;">{success_diff}</h1>',
-                    unsafe_allow_html=True)  
+                    unsafe_allow_html=True)
                 # st.write('Passed: ',success, ' in Red, ', success_diff)
 
         with col2:
-            st.header('Failed')    
+            st.header('Failed')
             if failure_diff == 0:
                 st.title(failure)
                 # st.subheader(failure_diff)
                 st.markdown(
                     f'<h1 style="color:#00FF00;font-size:35px;">{failure_diff}</h1>',
-                    unsafe_allow_html=True)  
-                # st.write('Failed: ',failure, ' in Normal, ', failure_diff) 
-            elif failure_diff > 0 :
+                    unsafe_allow_html=True)
+                # st.write('Failed: ',failure, ' in Normal, ', failure_diff)
+            elif failure_diff > 0:
                 st.title(failure)
                 # st.subheader(failure_diff)
                 st.markdown(
                     f'<h1 style="color:#00FF00;font-size:35px;">{failure_diff}</h1>',
-                    unsafe_allow_html=True)  
+                    unsafe_allow_html=True)
                 # st.write('Failed: ',failure, ' in Green, +', failure_diff)
             else:
                 st.title(failure)
                 # st.subheader(failure_diff)
                 st.markdown(
                     f'<h1 style="color:#FF0000;font-size:35px;">{failure_diff}</h1>',
-                    unsafe_allow_html=True)  
+                    unsafe_allow_html=True)
                 # st.write('Failed: ',failure, ' in Red, ', failure_diff)
-        
+
         with col3:
             st.header('Total Cases')
             st.title(success+failure)
@@ -177,6 +196,7 @@ def show_result(file_name, file_type, success, failure):
                 st.markdown(
                     f'<h1 style="color:#00FF00;font-size:35px;">{total_diff}</h1>',
                     unsafe_allow_html=True)
+                pass
             else:
                 st.markdown(
                     f'<h1 style="color:#FF0000;font-size:35px;">{total_diff}</h1>',
@@ -184,10 +204,11 @@ def show_result(file_name, file_type, success, failure):
 
     conn[0].close()
 
+
 def remove_streamlit_tag():
     hide_streamlit_style = """
             <style>
-            #MainMenu {visibility: hidden;}
+            # MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
             </style>
             """
