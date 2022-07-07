@@ -5,17 +5,25 @@ import streamlit as st
 import json
 import helper
 import xml.etree.ElementTree as ET
+#import mymodule
+# import pathlib
+# import os
 
-st.set_page_config(page_title="Dashboard", page_icon=":tada:", layout="wide")
+st.set_page_config(page_title="Dashboard", page_icon="chart_with_upwards_trend", layout="wide")
 
 #---------------------------- header_section ----------------------------
 st.title("Welcome to the dashboard")
 st.sidebar.subheader("Browse to choose your file")
 
-# ---------------------------- Removed Made with streamlit ----------------------------
-helper.remove_streamlit_tag()
+# # ---------------------------- Removed Made with streamlit ----------------------------
+# helper.remove_streamlit_tag()
 
-uploaded_file = st.sidebar.file_uploader(" ")        
+uploaded_file = st.sidebar.file_uploader(" ")  
+#file_path = mymodule.__uploaded_file__   
+#st.write(pathlib.Path(uploaded_file).parent.absolute())   
+# file_path = os.path.dirname(os.path.abspath(uploaded_file))
+# print(uploaded_file)
+#st.write(uploaded_file)
 
 if(uploaded_file):
     st.write("FileName: ",uploaded_file.name)
@@ -35,12 +43,8 @@ if(uploaded_file):
         else:                        
             try:        
                 with st.expander("Display Test Stages"):              
-                    values = helper.xml_result(root)
-                # if(values[2]):
-                #     st.write('total cases: ',values[2])
-                #     st.write('Passed cases: ',values[0])
-                #     st.write('Failed cases: ',values[1]) 
-                helper.show_result(uploaded_file.name, uploaded_file.type, values[0], values[1])                                   
+                    values = helper.xml_result(root)                
+                helper.show_result(uploaded_file.name, uploaded_file.type, values[0], values[1], values[2])                                   
             
             except Exception as e: 
                 st.markdown(
@@ -49,10 +53,10 @@ if(uploaded_file):
                 print(e)               
             
             else:
-                labels = ['Pass','Fail']      
+                labels = ['Passed', 'Failed', 'Skipped']      
                 helper.plot_donut(labels, values)
                 insert_op = helper.insert_log(uploaded_file.name, uploaded_file.type,
-                                        values[0], values[1])
+                                        values[0], values[1], values[2])
 
 #---------------------------- For JSON file ----------------------------
     elif(uploaded_file.type ==  "application/json"):        
@@ -66,11 +70,7 @@ if(uploaded_file):
         else:
             try:
                 with st.expander("See test stages"):
-                    values = helper.json_result(data) 
-
-                # st.write('total cases: ',values[2]) 
-                # st.write('Passed cases: ',values[0])
-                # st.write('Failed cases: ',values[1])                
+                    values = helper.json_result(data)                           
                 helper.show_result(uploaded_file.name, uploaded_file.type, values[0], values[1])
 
             except Exception as e:
