@@ -15,8 +15,8 @@ st.set_page_config(page_title="Dashboard", page_icon="chart_with_upwards_trend",
 st.title("Welcome to the dashboard")
 st.sidebar.subheader("Browse to choose your file")
 
-# # ---------------------------- Removed Made with streamlit ----------------------------
-# helper.remove_streamlit_tag()
+# ---------------------------- Removed Made with streamlit ----------------------------
+helper.remove_streamlit_tag()
 
 uploaded_file = st.sidebar.file_uploader(" ")  
 #file_path = mymodule.__uploaded_file__   
@@ -94,5 +94,3 @@ if(uploaded_file):
 #---------------------------- For History ----------------------------  
 with st.expander("See History"):              
     helper.fetch_log()
-
-

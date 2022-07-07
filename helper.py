@@ -155,9 +155,9 @@ def show_result(file_name, file_type, success, failure, skipped):
             if skipped_diff == 0:
                 st.metric(label="Skipped", value=skipped)
             elif skipped_diff > 0 :  
-                st.metric(label="Skipped", value=skipped, delta=failure_diff)  
+                st.metric(label="Skipped", value=skipped, delta=skipped_diff)  
             else:
-                st.metric(label="Skipped", value=skipped, delta=failure_diff)
+                st.metric(label="Skipped", value=skipped, delta=skipped_diff)
 
         with col4:
             if total_diff == 0:
