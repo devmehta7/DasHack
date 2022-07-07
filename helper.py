@@ -2,44 +2,52 @@ import streamlit as st
 import plotly.graph_objects as go
 import datetime
 from pymongo import MongoClient
+import glob
+
 
 def xml_result(root):
     success = 0
     failure = 0
     skipped = 0
-    tag_count = 0    
+    tag_count = 0
     try:
         for node in root[1][1][0].findall("test-method"):
-            tag_count += 1        
+            tag_count += 1
         for i in range(tag_count):
-            st.write("* ", root[1][1][0][i].attrib['signature'])                                
-            if(root[1][1][0][i].attrib['status']=='PASS'):
+            st.write("* ", root[1][1][0][i].attrib['signature'])
+            if(root[1][1][0][i].attrib['status'] == 'PASS'):
                 success += 1
-                st.markdown(f'<h1 style="color:#3cd070;font-size:100%;">{"> SUCCEEDED "}</h1>', unsafe_allow_html=True)       
+                st.markdown(
+                    f'<h1 style="color:#3cd070;font-size:100%;">{"> SUCCEEDED "}</h1>', unsafe_allow_html=True)
             else:
                 failure += 1
-                st.markdown(f'<h1 style="color:#e2062c;font-size:100%;">{"> FALIED "}</h1>', unsafe_allow_html=True)    
-    except:                                    
+                st.markdown(
+                    f'<h1 style="color:#e2062c;font-size:100%;">{"> FAILED "}</h1>', unsafe_allow_html=True)
+    except:
         for node in root.findall("testcase"):
-            tag_count += 1       
-    
-        for i in range(1,tag_count+1):                                        
-            st.write("* ", root[i].attrib['name'])                              
-            if(root[i][0].tag=='failure'):
+            tag_count += 1
+
+        for i in range(1, tag_count+1):
+            st.write("* ", root[i].attrib['name'])
+            if(root[i][0].tag == 'failure'):
                 failure += 1
-                st.markdown(f'<h1 style="color:#e2062c;font-size:100%;">{"> FALIED "}</h1>', unsafe_allow_html=True)        
-                st.write(root[i][0].attrib)                 
-                
-            elif(root[i][0].tag=='skipped'):
+                st.markdown(
+                    f'<h1 style="color:#e2062c;font-size:100%;">{"> FALIED "}</h1>', unsafe_allow_html=True)
+                st.write(root[i][0].attrib)
+
+            elif(root[i][0].tag == 'skipped'):
                 skipped += 1
-                st.markdown(f'<h1 style="color:#87CEEB;font-size:100%;">{"> SKIPPED "}</h1>', unsafe_allow_html=True)                            
-                st.write(root[i][0].attrib)                 
-            
+                st.markdown(
+                    f'<h1 style="color:#87CEEB;font-size:100%;">{"> SKIPPED "}</h1>', unsafe_allow_html=True)
+                st.write(root[i][0].attrib)
+
             else:
                 success += 1
-                st.markdown(f'<h1 style="color:#3cd070;font-size:100%;">{"> SUCCEEDED "}</h1>', unsafe_allow_html=True)   
-    
+                st.markdown(
+                    f'<h1 style="color:#3cd070;font-size:100%;">{"> SUCCEEDED "}</h1>', unsafe_allow_html=True)
+
     return [success, failure, skipped, tag_count]
+
 
 def json_result(data):
     success = 0
@@ -55,9 +63,20 @@ def json_result(data):
             success += 1
         else:
             st.markdown(
-                f'<h1 style="color:#e2062c;font-size:100%;">{"> FALIED "}</h1>', unsafe_allow_html=True)
-            failure += 1            
+                f'<h1 style="color:#e2062c;font-size:100%;">{"> FAILED "}</h1>', unsafe_allow_html=True)
+            failure += 1
     return [success, failure, key_count]
+
+
+def show_ss():
+    with st.expander("Failed Cases Screenshot"):
+        for path in glob.glob('../../Documents/PerfectQA/selenium/selenium/target/failsafe-reports/*.png'):
+            # im = Image.open(path)
+            caption = path.replace(
+                '../../Documents/PerfectQA/selenium/selenium/target/failsafe-reports/', ' ')
+
+            st.image(image=path, caption=caption)
+
 
 def plot_donut(labels, values):
 
@@ -77,11 +96,10 @@ def connect():
     # returns [0] - client object, [1] - collection to work with.
     return [client, coll]
 
-    
 
 def insert_log(file_name, file_type, success, failure, skipped):
     try:
-       
+
         conn = connect()
         coll = conn[1]
         ct = datetime.datetime.now()
@@ -106,13 +124,13 @@ def insert_log(file_name, file_type, success, failure, skipped):
 
 
 def fetch_log():
-   
+
     conn = connect()
     coll = conn[1]
     success = 0
-    faliure = 0 
+    faliure = 0
     skipped = 0
-    cursor = coll.find().sort('timestamp',-1).limit(5)    
+    cursor = coll.find().sort('timestamp', -1).limit(5)
     for doc in cursor:
         st.write(doc['timestamp'], ' - ', doc['file_name'])
         success = doc['success']
@@ -120,34 +138,36 @@ def fetch_log():
         skipped = doc['skipped']
         st.markdown(f'<span style="color:#3cd070;font-size:80%;">{" SUCCEEDED - "}{success}</span>\
             <span style="color:#e2062c;font-size:80%;margin-left: 10em;">{" FAILED - "}{faliure}</span>\
-            <span style="color:#87CEEB;font-size:80%;margin-left: 10em;">{" SKIPPED - "}{skipped}</span>',unsafe_allow_html=True)
+            <span style="color:#87CEEB;font-size:80%;margin-left: 10em;">{" SKIPPED - "}{skipped}</span>', unsafe_allow_html=True)
     conn[0].close()
+
 
 def show_result(file_name, file_type, success, failure, skipped):
     conn = connect()
     coll = conn[1]
-    cursor = coll.find({"file_name": file_name, "file_type":file_type}).sort("timestamp", -1).limit(1)
+    cursor = coll.find({"file_name": file_name, "file_type": file_type}).sort(
+        "timestamp", -1).limit(1)
     for doc in cursor:
-        success_diff = success - doc['success'] 
+        success_diff = success - doc['success']
         failure_diff = failure - doc['failure']
         skipped_diff = skipped - doc['skipped']
-        total_diff = (success+failure+skipped) - (doc['success']+doc['failure']+doc['skipped'])
+        total_diff = (success+failure+skipped) - \
+            (doc['success']+doc['failure']+doc['skipped'])
         col1, col2, col3, col4 = st.columns(4)
 
-        
-        with col1:             
+        with col1:
             if success_diff == 0:
-                st.metric(label="Passed", value=success)    
+                st.metric(label="Passed", value=success)
             elif success_diff > 0:
-                st.metric(label="Passed", value=success, delta=success_diff) 
-            else: 
-                st.metric(label="Passed", value=success, delta=success_diff) 
+                st.metric(label="Passed", value=success, delta=success_diff)
+            else:
+                st.metric(label="Passed", value=success, delta=success_diff)
 
-        with col2:   
+        with col2:
             if failure_diff == 0:
                 st.metric(label="Failed", value=failure)
-            elif failure_diff > 0 :  
-                st.metric(label="Failed", value=failure, delta=failure_diff)  
+            elif failure_diff > 0:
+                st.metric(label="Failed", value=failure, delta=failure_diff)
             else:
                 st.metric(label="Failed", value=failure, delta=failure_diff)
 
@@ -163,16 +183,19 @@ def show_result(file_name, file_type, success, failure, skipped):
             if total_diff == 0:
                 st.metric(label="Total cases", value=success+failure+skipped)
             elif total_diff > 0:
-                st.metric(label="Total cases", value=success+failure+skipped, delta=total_diff)
+                st.metric(label="Total cases", value=success +
+                          failure+skipped, delta=total_diff)
             else:
-                st.metric(label="Total cases", value=success+failure+skipped, delta=total_diff)  
-                
+                st.metric(label="Total cases", value=success +
+                          failure+skipped, delta=total_diff)
+
     conn[0].close()
+
 
 def remove_streamlit_tag():
     hide_streamlit_style = """
             <style>
-            #MainMenu {visibility: hidden;}
+            # MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
             </style>
             """
