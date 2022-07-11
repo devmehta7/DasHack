@@ -3,6 +3,34 @@ import plotly.graph_objects as go
 import datetime
 from pymongo import MongoClient
 import glob
+import time
+import pyautogui
+
+def login():
+    st.subheader("Login Section")
+    username = st.text_input("User Name")
+    password = st.text_input("Password", type='password')
+
+    if st.button("Login"):
+        conn = connect('users')
+        coll = conn[1]
+        login = coll.find_one(
+            {"username": username, "password": password})
+        if(login):
+            st.success("You have successfully Logged In as {}".format(username))                                
+            st.success("Go to Home page to access the dashboard !!")             
+            conn[0].close()
+        else :
+            st.warning("Incorrect Username/Password")                
+            conn[0].close()
+            return False                    
+        
+    return username
+
+def logout(once):    
+    for _ in range(once):
+        time.sleep(once)
+        pyautogui.hotkey('f5')
 
 
 def xml_result(root):
@@ -28,7 +56,11 @@ def xml_result(root):
             tag_count += 1
 
         for i in range(1, tag_count+1):
-            st.write("* ", root[i].attrib['name'])
+            stage_name = str(root[i].attrib['name'])
+            stage_name = stage_name.replace("[", "_")
+            stage_name = stage_name.replace("]", "_")
+            print(stage_name)
+            st.write("* " + stage_name)
             if(root[i][0].tag == 'failure'):
                 failure += 1
                 st.markdown(
@@ -88,19 +120,25 @@ def plot_donut(labels, values):
     st.plotly_chart(fig)
 
 
-def connect():
+def connect(table_name):
     uri = "mongodb+srv://user1:user1.mongo@cluster0.b3z3fnc.mongodb.net/?retryWrites=true&w=majority"
     client = MongoClient(uri)
     db = client.Dashboard
-    coll = db.files_log
+    if table_name == 'files_log':
+        coll = db.files_log
+        return [client, coll]
+
+    elif table_name == 'users':
+        coll = db.users
+        return [client, coll]
+
     # returns [0] - client object, [1] - collection to work with.
-    return [client, coll]
 
 
-def insert_log(file_name, file_type, success, failure, skipped):
+def insert_log(user, file_name, file_type, success, failure, skipped):
     try:
 
-        conn = connect()
+        conn = connect('files_log')
         coll = conn[1]
         ct = datetime.datetime.now()
 
@@ -110,12 +148,13 @@ def insert_log(file_name, file_type, success, failure, skipped):
             'success': success,
             'failure': failure,
             'skipped': skipped,
-            'file_type': file_type
+            'file_type': file_type,
+            'username': user
         }]
         result = coll.insert_many(insert)
         print(result.inserted_ids)
     except Exception as e:
-        print("database insert unsuccessful")
+        print("database insertion unsuccessful")
         print(e)
         return 0
     else:
@@ -123,14 +162,14 @@ def insert_log(file_name, file_type, success, failure, skipped):
     return 1
 
 
-def fetch_log():
+def fetch_log(user):
 
-    conn = connect()
+    conn = connect('files_log')
     coll = conn[1]
     success = 0
     faliure = 0
     skipped = 0
-    cursor = coll.find().sort('timestamp', -1).limit(5)
+    cursor = coll.find({"username":user}).sort('timestamp', -1).limit(5)
     for doc in cursor:
         st.write(doc['timestamp'], ' - ', doc['file_name'])
         success = doc['success']
@@ -142,10 +181,10 @@ def fetch_log():
     conn[0].close()
 
 
-def show_result(file_name, file_type, success, failure, skipped):
-    conn = connect()
+def show_result(user, file_name, file_type, success, failure, skipped):
+    conn = connect('files_log')
     coll = conn[1]
-    cursor = coll.find({"file_name": file_name, "file_type": file_type}).sort(
+    cursor = coll.find({"username": user, "file_name": file_name, "file_type": file_type}).sort(
         "timestamp", -1).limit(1)
     for doc in cursor:
         success_diff = success - doc['success']
@@ -174,10 +213,10 @@ def show_result(file_name, file_type, success, failure, skipped):
         with col3:
             if skipped_diff == 0:
                 st.metric(label="Skipped", value=skipped)
-            elif skipped_diff > 0 :  
-                st.metric(label="Skipped", value=skipped, delta=skipped_diff)  
+            elif skipped_diff > 0:
+                st.metric(label="Skipped", value=skipped, delta=failure_diff)
             else:
-                st.metric(label="Skipped", value=skipped, delta=skipped_diff)
+                st.metric(label="Skipped", value=skipped, delta=failure_diff)
 
         with col4:
             if total_diff == 0:
