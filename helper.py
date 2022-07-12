@@ -3,35 +3,57 @@ import plotly.graph_objects as go
 import datetime
 from pymongo import MongoClient
 import glob
-import time
 import pyautogui
 
 def login():
     st.subheader("Login Section")
+    username = ""
+    password = ""
     username = st.text_input("User Name")
     password = st.text_input("Password", type='password')
 
     if st.button("Login"):
         conn = connect('users')
         coll = conn[1]
-        login = coll.find_one(
-            {"username": username, "password": password})
-        if(login):
+        check_user = coll.find({"username": username, "password": password})        
+        result = list(check_user)        
+        if(len(result)!=0):
             st.success("You have successfully Logged In as {}".format(username))                                
             st.success("Go to Home page to access the dashboard !!")             
             conn[0].close()
+            return username
         else :
             st.warning("Incorrect Username/Password")                
             conn[0].close()
-            return False                    
-        
-    return username
+            return False                                
 
-def logout(once):    
-    for _ in range(once):
-        time.sleep(once)
-        pyautogui.hotkey('f5')
+def logout(): 
+    pyautogui.hotkey('cmd','r')
+    pyautogui.hotkey('ctrl','r')
 
+def signup(user):
+    st.subheader("Create New Account ")
+    new_user = st.text_input("Username")
+    new_password = st.text_input("Password", type='password')
+
+    if st.button("SignUp"):
+        conn = connect('users')
+        coll = conn[1]
+        check_user = coll.find({"username": new_user})
+        result = list(check_user)
+        if(len(result)!=0):
+            user = f"_{new_user}_"
+            st.warning('select a different username, ' + user + ' already exists !')  
+        else:
+            signup = coll.insert_one(
+                {"username": new_user, "password": new_password})
+            if signup:
+                st.success(
+                    "You have Successfully created a Valid Account")
+                st.info("Go to Login Menu to Login")
+            else:
+                st.warning("please try again")
+        conn[0].close()
 
 def xml_result(root):
     success = 0
@@ -42,7 +64,11 @@ def xml_result(root):
         for node in root[1][1][0].findall("test-method"):
             tag_count += 1
         for i in range(tag_count):
-            st.write("* ", root[1][1][0][i].attrib['signature'])
+            stage_name = str(root[1][1][0][i].attrib['signature'])
+            stage_name = stage_name.replace("[", "_")
+            stage_name = stage_name.replace("]", "_")    
+            #st.write("* ", root[1][1][0][i].attrib['signature'])
+            st.text_area("",value=stage_name, help=f"Test Stage: {i+1}")   
             if(root[1][1][0][i].attrib['status'] == 'PASS'):
                 success += 1
                 st.markdown(
@@ -58,20 +84,24 @@ def xml_result(root):
         for i in range(1, tag_count+1):
             stage_name = str(root[i].attrib['name'])
             stage_name = stage_name.replace("[", "_")
-            stage_name = stage_name.replace("]", "_")
-            print(stage_name)
-            st.write("* " + stage_name)
+            stage_name = stage_name.replace("]", "_")    
+            # st.markdown(
+            #         f'<h1 style="color:#FFD300;font-size:100%;">{"> Stage Name "}</h1>', unsafe_allow_html=True)
+            st.text_area("",value=stage_name, help=f"Test Stage: {i}")        
+            #st.write("* " + stage_name)
             if(root[i][0].tag == 'failure'):
                 failure += 1
                 st.markdown(
-                    f'<h1 style="color:#e2062c;font-size:100%;">{"> FALIED "}</h1>', unsafe_allow_html=True)
+                    f'<h1 style="color:#e2062c;font-size:100%;">{"> FAILED "}</h1>', unsafe_allow_html=True)
                 st.write(root[i][0].attrib)
+                #st.text_area("Failure Exception",value=root[i][0].attrib, help=f"Test Stage {i}: Failure Exception")
 
             elif(root[i][0].tag == 'skipped'):
                 skipped += 1
                 st.markdown(
                     f'<h1 style="color:#87CEEB;font-size:100%;">{"> SKIPPED "}</h1>', unsafe_allow_html=True)
                 st.write(root[i][0].attrib)
+                #st.text_area("Skipped Exception",value=root[i][0].attrib, help=f"Test Stage {i}: Failure Exception")
 
             else:
                 success += 1

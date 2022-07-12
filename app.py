@@ -10,7 +10,7 @@ def execute_dashboard(user):
     # ---------------------------- header_section ----------------------------
     st.title("Welcome to the dashboard")        
     if(st.sidebar.button('Logout')):
-        helper.logout(1)
+        helper.logout()
     st.sidebar.subheader("Browse to choose your file")    
 
     uploaded_file = st.sidebar.file_uploader(" ")
@@ -32,7 +32,7 @@ def execute_dashboard(user):
                 print(e)
             else:
                 try:
-                    with st.expander("Display Test Stages"):
+                    with st.expander("Displaying All the Test Stages"):
                         values = helper.xml_result(root)
                     helper.show_ss()
                     helper.show_result(user,
